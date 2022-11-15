@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:beans="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+       xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+  http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+  http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa.xsd
+  http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+  http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd">
+    <bean
+            class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix">
+            <value>/WEB-INF/view/</value>
+        </property>
+        <property name="suffix">
+            <value>.jsp</value>
+        </property>
+    </bean>
+    <mvc:annotation-driven/>
+    <context:component-scan base-package="spring"/>
+
+    <jpa:repositories base-package="spring.dao.repository" entity-manager-factory-ref="emf"/>
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/WEB-INF/view/" />
+        <property name="suffix" value=".jsp" />
+    </bean>
+
+    <bean id="emf" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+        <property name="packagesToScan" value="spring.model"/>
+        <property name="dataSource" ref="dataSource"/>
+
+        <property name="jpaProperties">
+            <props>
+                <prop key="hibernate.show_sql">true</prop>
+                <prop key="hibernate.format_sql">true</prop>
+           <!--      <prop key="hibernate.hbm2ddl.auto">create</prop>-->
+                <prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
+            </props>
+        </property>
+
+        <property name="persistenceProvider">
+            <bean class="org.hibernate.jpa.HibernatePersistenceProvider"/>
+        </property>
+
+    </bean>
+    <bean class="org.springframework.jdbc.datasource.SimpleDriverDataSource" id="dataSource">
+        <property name="driverClass" value="com.mysql.jdbc.Driver"/>
+        <property name="url" value="jdbc:mysql://localhost:3306/music_data"/>
+        <property name="username" value="root"/>
+        <property name="password" value="root"/>
+    </bean>
+    <bean id="userService" class="spring.service.implementation.UserServiceImpl">
+        <property name="userDao" ref="userDao"/>
+    </bean>
+    <bean id="userDao" class="spring.dao.impl.UserDaoImpl">
+        <property name="userRepository" ref="userRepository"/>
+    </bean>
+    <bean id="songService" class="spring.service.implementation.SongServiceImpl">
+        <property name="songDao" ref="songDao"/>
+    </bean>
+    <bean id="songDao" class="spring.dao.impl.SongDaoImpl">
+        <property name="songRepository" ref="songRepository"/>
+    </bean>
+    <bean id="roleService" class="spring.service.implementation.RoleServiceImpl">
+        <property name="roleDao" ref="roleDao"/>
+    </bean>
+    <bean id="roleDao" class="spring.dao.impl.RoleDaoImpl">
+        <property name="roleRepository" ref="roleRepository"/>
+    </bean>
+    <bean id="purchaseDetailsService" class="spring.service.implementation.PurchaseServiceImpl">
+        <property name="purchaseDetailsDao" ref="purchaseDetailsDao"/>
+    </bean>
+    <bean id="purchaseDetailsDao" class="spring.dao.impl.PurchaseDaoImpl">
+        <property name="purchaseRepository" ref="purchaseRepository"/>
+    </bean>
+    <bean id="addressService" class="spring.service.implementation.AddressImpl">
+        <property name="addressDao" ref="addressDao"/>
+    </bean>
+    <bean id="addressDao" class="spring.dao.impl.AddressDaoImpl">
+        <property name="addressRepository" ref="addressRepository"/>
+    </bean>
+    <bean id="libraryService" class="spring.service.implementation.LibraryServiceImpl">
+        <property name="libraryDao" ref="libraryDao"/>
+    </bean>
+    <bean id="libraryDao" class="spring.dao.impl.LibraryDaoImpl">
+        <property name="libraryRepository" ref="libraryRepository"/>
+    </bean>
+    <bean id="contentService" class="spring.service.implementation.ContentServiceImpl">
+        <property name="contentDao" ref="contentDao"/>
+    </bean>
+    <bean id="contentDao" class="spring.dao.impl.ContentDaoImpl">
+        <property name="contentRepository" ref="contentRepository"/>
+    </bean>
+    <bean id="basketService" class="spring.service.implementation.BasketServiceImpl">
+        <property name="basketDao" ref="basketDao"/>
+    </bean>
+    <bean id="basketDao" class="spring.dao.impl.BasketDaoImpl">
+        <property name="basketRepository" ref="basketRepository"/>
+    </bean>
+    <bean class="org.springframework.orm.jpa.JpaTransactionManager" id="transactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+    <mvc:resources mapping="/css/**" location="/css/" />
+    <mvc:annotation-driven/>
+</beans>
